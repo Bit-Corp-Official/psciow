@@ -13,7 +13,7 @@ jobs:
         projectPath:
           - psciow
         unityVersion:
-          - 2021.2.10f1
+          - 2021.2.8f1
         targetPlatform:
           - StandaloneLinux64 # Build a Linux 64-bit standalone.
           #- Android # Build an Android player.
