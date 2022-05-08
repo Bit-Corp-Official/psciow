@@ -4,6 +4,7 @@ on:
   push:
     branches:    
       - 'releases/**'
+      - 'main'
 
 jobs:
   buildAndTestForLinuxBasedPlatforms:
