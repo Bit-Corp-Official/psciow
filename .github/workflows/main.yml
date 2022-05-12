@@ -71,5 +71,15 @@ jobs:
           
       - uses: actions/upload-artifact@v2
         with:
-          name: Build
+          name: ${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
           path: build
+          
+      - run: echo "TIME=$(date "+%Y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
+          
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ matrix.projectPath }}-*
+          tag: ${{ github.ref }}-${{ env.TIME }}
+          overwrite: true
+          file_glob: true
