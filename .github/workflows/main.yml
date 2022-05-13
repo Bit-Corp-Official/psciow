@@ -23,7 +23,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: main-${{ env.TIME }}
+#           tag_name: main-${{ env.TIME }}
           release_name: Release ${{ env.TIME }}
           draft: false
           prerelease: true
@@ -135,3 +135,10 @@ jobs:
           asset_name: ${{ matrix.projectPath }}-${{ matrix.targetPlatform }}.zip
           # The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information
           asset_content_type: application/zip
+          
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          tag: ${{ version }}
+          artifacts: "build.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
