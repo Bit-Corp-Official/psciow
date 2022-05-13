@@ -30,7 +30,7 @@ jobs:
           
     
     
-  buildAndTestForLinuxBasedPlatforms:
+  buildForPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
     
@@ -139,6 +139,6 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          tag: ${{ env.TIME }}
+          tag: ${{ jobs.buildForPlatforms.env.TIME }}
           artifacts: "build.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
