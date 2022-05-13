@@ -1,0 +1,23 @@
+name: TEST
+
+on: push
+      
+jobs:
+  test:
+    name: TESTa
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      
+    outputs:
+      output: ${{ steps.timeshare.outputs.TIME }}
+      
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Push to ECR
+        run: echo ${{ steps.extract_branch.outputs.branch }}
