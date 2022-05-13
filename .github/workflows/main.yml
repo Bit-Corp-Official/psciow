@@ -92,7 +92,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           # customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
       
-      - run: zip -9 -r build.zip build/*
+      - run: cd build && zip -9 -r ../build.zip * && cd ..
       
       - uses: actions/upload-artifact@v2
         with:
