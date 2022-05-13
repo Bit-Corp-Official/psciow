@@ -16,8 +16,8 @@ jobs:
     steps:
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/release/})"
         id: extract_branch
 
-      - name: Push to ECR
+      - name: ECho
         run: echo ${{ steps.extract_branch.outputs.branch }}
