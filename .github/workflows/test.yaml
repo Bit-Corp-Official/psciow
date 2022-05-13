@@ -19,5 +19,5 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/release/})"
         id: extract_branch
 
-      - name: ECho
+      - name: Echo
         run: echo ${{ steps.extract_branch.outputs.branch }}
