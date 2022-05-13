@@ -69,7 +69,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           # customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
           
-      - run: ls -allah /build
+      - run: ls -allah build
       
       - uses: actions/upload-artifact@v2
         with:
