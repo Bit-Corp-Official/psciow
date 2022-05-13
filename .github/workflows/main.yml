@@ -23,7 +23,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-#           tag_name: main-${{ env.TIME }}
+          tag_name: ${{ env.TIME }}
           release_name: Release ${{ env.TIME }}
           draft: false
           prerelease: true
@@ -139,6 +139,6 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          tag: ${{ version }}
+          tag: ${{ env.TIME }}
           artifacts: "build.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
