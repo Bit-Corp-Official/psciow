@@ -1,4 +1,4 @@
-name: Unity Build Project
+name: Unity Build Projecte
 
 on:
   push:
