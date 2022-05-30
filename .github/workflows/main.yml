@@ -1,11 +1,11 @@
-name: Unity Build Projecte
+name: Unity Build Project
 
 on:
   push:
-    branches:    
-      - 'releases/**'
-      - 'main'
-
+    branches:
+      - '*'
+      - '!releases/**'
+      
 jobs:
   createRelease:
     name: Create Release
@@ -30,7 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.TIME }}
-          release_name: Release ${{ env.TIME }}
+          release_name: Pre-release build ${{ env.TIME }}
           draft: false
           prerelease: true
           
@@ -42,23 +42,22 @@ jobs:
     
     needs:
       - createRelease
-      
     
     strategy:
       fail-fast: false
       matrix:
         projectPath:
-          - psciow
+          - PSCIOW
         unityVersion:
-          - 2021.2.8f1
+          - 2021.3.2f1
         targetPlatform:
-          #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-          - StandaloneWindows # Build a Windows standalone.
-          #- StandaloneWindows64 # Build a Windows 64-bit standalone.
-          - StandaloneLinux64 # Build a Linux 64-bit standalone.
-          #- iOS # Build an iOS player.
-          #- Android # Build an Android .apk standalone app.
-          #- WebGL # WebGL.
+          - StandaloneOSX
+          - StandaloneWindows
+          - StandaloneWindows64
+          - StandaloneLinux64
+          #- iOS
+          #- Android
+          #- WebGL
           
     steps:
       - uses: actions/checkout@v2
@@ -68,26 +67,25 @@ jobs:
           
       - uses: actions/cache@v2
         with:
-          path: Library # ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }} # Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(matrix.projectPath) }}
+          path: Library
+          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-${{ matrix.targetPlatform }}-
             Library-
             
-#       - uses: game-ci/unity-test-runner@v2
-#         id: testRunner
-#         env:
-#           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-#         with:
-#           # projectPath: ${{ matrix.projectPath }}
-#           unityVersion: ${{ matrix.unityVersion }}
-#           githubToken: ${{ secrets.GITHUB_TOKEN }}
+      - uses: game-ci/unity-test-runner@v2
+        id: testRunner
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: ${{ matrix.unityVersion }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
           
-#       - uses: actions/upload-artifact@v2
-#         if: always()
-#         with:
-#           name: Test results (all modes)
-#           path: ${{ steps.testRunner.outputs.artifactsPath }}
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Test results (all modes)
+          path: ${{ steps.testRunner.outputs.artifactsPath }}
           
       - uses: game-ci/unity-builder@v2
         env:
@@ -97,58 +95,21 @@ jobs:
         with:
           buildName: ${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
           allowDirtyBuild: true
-          # projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          # customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
-      
+          
       - run: cd build && zip -9 -r ../${{ matrix.projectPath }}-${{ matrix.targetPlatform }}.zip * && cd ..
-      
+          
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
           path: build
-          
-#       - uses: svenstaro/upload-release-action@v2
-#         with:
-#           repo_token: ${{ secrets.GITHUB_TOKEN }}
-#           file: build/*
-#           tag: ${{ github.ref }}-${{ env.TIME }}
-#           overwrite: true
-#           file_glob: true
 
-#       - uses: octokit/request-action@v2.x
-#         id: get_latest_release
-#         with:
-#           route: GET /repos/:repository/releases/latest
-#           repository: ${{ github.repository }}
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            
-#       - name: get upload url
-#         id: get_upload_url
-#         run: |
-#           url=$(echo "$response" | jq -r '.upload_url')
-#           echo "::set-output name=url::$url"
-#         env: 
-#           response:  ${{ steps.get_latest_release.outputs.data }}
-
-#       - name: Upload a Release Asset
-#         uses: actions/upload-release-asset@v1.0.2
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           upload_url:  ${{steps.get_upload_url.outputs.url}}
-#           # The path to the asset you want to upload
-#           asset_path: ./build.zip
-#           # The name of the asset you want to upload
-#           asset_name: ${{ matrix.projectPath }}-${{ matrix.targetPlatform }}.zip
-#           # The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information
-#           asset_content_type: application/zip
-          
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
+          name: Pre-release build ${{ needs.createRelease.outputs.output }}
+          prerelease: true
           tag: ${{ needs.createRelease.outputs.output }}
           artifacts: ${{ matrix.projectPath }}-${{ matrix.targetPlatform }}.zip
           token: ${{ secrets.GITHUB_TOKEN }}
