@@ -73,22 +73,21 @@ jobs:
             Library-${{ matrix.targetPlatform }}-
             Library-
             
-      - uses: game-ci/unity-test-runner@v2
-        id: testRunner
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          unityVersion: ${{ matrix.unityVersion }}
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+#       - uses: game-ci/unity-test-runner@v2
+#         id: testRunner
+#         env:
+#           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+#         with:
+#           unityVersion: ${{ matrix.unityVersion }}
+#           githubToken: ${{ secrets.GITHUB_TOKEN }}
           
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: Test results (all modes)
-          path: ${{ steps.testRunner.outputs.artifactsPath }}
-          
-      - run: echo "DEV=-Development" >> $GITHUB_ENV
-        if: ${{ matrix.targetPlatform }} == WebGL
+#       - uses: actions/upload-artifact@v2
+#         if: always()
+#         with:
+#           name: Test results (all modes)
+#           path: ${{ steps.testRunner.outputs.artifactsPath }}
+         
+      - run: echo "if ["${{ matrix.targetPlatform }}" = WebGL] then DEV=-Development; echo $DEV fi" >> $GITHUB_ENV
           
       - uses: game-ci/unity-builder@v2
         env:
