@@ -87,7 +87,7 @@ jobs:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
          
-      - run: ( [[ "${{ matrix.targetPlatform }}" == "WebGL" ]] && echo "DEV=-Development" >> $GITHUB_ENV || echo "Not WebGL" )
+#      - run: ( [[ "${{ matrix.targetPlatform }}" == "WebGL" ]] && echo "DEV=-Development" >> $GITHUB_ENV || echo "Not WebGL" )
           
       - uses: game-ci/unity-builder@v2
         env:
@@ -99,7 +99,7 @@ jobs:
           allowDirtyBuild: true
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          customParameters: ${{ env.DEV }}
+#          customParameters: ${{ env.DEV }}
           
       - run: cd build && zip -9 -r ../${{ matrix.projectPath }}-${{ matrix.targetPlatform }}.zip * && cd ..
           
