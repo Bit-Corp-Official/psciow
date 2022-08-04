@@ -87,7 +87,7 @@ jobs:
 #           name: Test results (all modes)
 #           path: ${{ steps.testRunner.outputs.artifactsPath }}
          
-      - run: echo "if ['${{ matrix.targetPlatform }}' = 'WebGL'] then DEV=-Development fi" >> $GITHUB_ENV
+      - run: if ['${{ matrix.targetPlatform }}' = 'WebGL'] then echo="DEV=-Development" >> $GITHUB_ENV fi
       
       - run: echo ${{ env.DEV }}
           
