@@ -57,7 +57,7 @@ jobs:
           - StandaloneLinux64
           #- iOS
           #- Android
-          #- WebGL
+          - WebGL
           
     steps:
       - uses: actions/checkout@v2
@@ -87,6 +87,9 @@ jobs:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
           
+      - run: echo "DEV=-Development" >> $GITHUB_ENV
+        if: ${{ matrix.targetPlatform }} == WebGL
+          
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -97,6 +100,7 @@ jobs:
           allowDirtyBuild: true
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: -Development
           
       - run: cd build && zip -9 -r ../${{ matrix.projectPath }}-${{ matrix.targetPlatform }}.zip * && cd ..
           
