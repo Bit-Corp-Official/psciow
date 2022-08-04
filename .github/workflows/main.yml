@@ -57,7 +57,7 @@ jobs:
           - StandaloneLinux64
           #- iOS
           #- Android
-          - WebGL
+          #- WebGL
           
     steps:
       - uses: actions/checkout@v2
