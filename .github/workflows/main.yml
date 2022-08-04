@@ -100,7 +100,7 @@ jobs:
           allowDirtyBuild: true
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          customParameters: -Development
+          customParameters: ${{ env.DEV }}
           
       - run: cd build && zip -9 -r ../${{ matrix.projectPath }}-${{ matrix.targetPlatform }}.zip * && cd ..
           
